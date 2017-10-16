@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="D:\Program Files\Android\android-sdk\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.0-alpha7\constraint-layout-solver-1.0.0-alpha7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="439eeb5ffd54cbd18db0a6aea471e8356f19fc36">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\constraint-layout-solver-1.0.0-alpha7_6b926e5be8c7507fef8cdc69a84574456789571c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.2.0\f7873a2ebde246a45c2a8d6f3247108b4c88a879\okhttp-3.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f7873a2ebde246a45c2a8d6f3247108b4c88a879">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\okhttp-3.2.0_5c7b45bf23d6d2fc0af53c7a20157507c7c55908.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.6.2\f1bc476cc167b18e66c297df599b2377131a8947\gson-2.6.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f1bc476cc167b18e66c297df599b2377131a8947">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\gson-2.6.2_792a4a023b3151d7e2d63131039cb9ac449ba6a5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.android\build-cache\090b70e7a8b2dbd75c04128d21c93f263a189710\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="541a2ad68dc68aa49795821f8280b7624e6a0c9b">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\classes_1e2901caa404a701104a73653d89078205ef3293.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.github.bumptech.glide\glide\3.7.0\9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4\glide-3.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\glide-3.7.0_45744cb35b9f919d7abb861e94869f7bef54a346.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-gson\2.0.2\f8d87f15b94b8d74e7ccf61d7eedb558811cdb30\converter-gson-2.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="f8d87f15b94b8d74e7ccf61d7eedb558811cdb30">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\converter-gson-2.0.2_a5f4ec57371fd7421c7fd7685076d583deb02fd6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\retrofit\2.0.2\43eeae0b9fb087bb3194ba59ab63a38a32fbf3e\retrofit-2.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="043eeae0b9fb087bb3194ba59ab63a38a32fbf3e">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\retrofit-2.0.2_53fbd806c4b2d65c6b95761b9ea51ad86a420dc4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\DELL\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.6.0\98476622f10715998eacf9240d6b479f12c66143\okio-1.6.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="98476622f10715998eacf9240d6b479f12c66143">
+        <dex dex="D:\CTS Workspace\Android\Gmail\app\build\intermediates\pre-dexed\debug\okio-1.6.0_814967621bceadb54e9f08c74de187687a6209ee.jar" />
+    </item>
+
+</items>
