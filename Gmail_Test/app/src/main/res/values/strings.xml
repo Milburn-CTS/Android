@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Gmail_Test</string>
+    <string name="title_activity_gmail">GmailActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_delete">Delete</string>
+</resources>

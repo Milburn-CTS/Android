@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_home"
+    android:weightSum="1"
+    tools:context="com.continentaltechsolutions.dell.gmail_test.activity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:orientation="vertical">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefreshHome"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="7"
+                    android:fontFamily=""
+                    android:textColor="@color/colorOdXelTeal"
+                    android:text="TextView" />
+
+                <ImageView
+                    android:id="@+id/imageViewStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/red" />
+            </LinearLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/imageButtonSOS"
+        android:layout_width="100dp"
+        android:layout_height="118dp"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/odxel_logo_round" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="vertical">
+        <!--Space-->
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvDevName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorOdXelTeal"
+        android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.16">
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.15">
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.7">
+
+            <!-- This is the part that's 70% of the total width. I'm inserting a LinearLayout and buttons.-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/imageButtonArm"
+                    app:srcCompat="@drawable/disarmed"
+                    android:scaleType="fitXY"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp">
+                </ImageButton>
+                <Chronometer
+                    android:id="@+id/chronometer3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textAlignment="center">
+                </Chronometer>
+
+                <ImageButton
+                    android:id="@+id/imageButtonCtrl"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp"
+                    android:scaleType="fitXY"
+                    android:layout_marginTop="20dp"
+                    app:srcCompat="@drawable/control"/>
+
+            </LinearLayout>
+            <!-- 70% Width End-->
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.15">
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:orientation="vertical">
+        <!--Space-->
+    </LinearLayout>
+</LinearLayout>
