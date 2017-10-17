@@ -31,7 +31,24 @@ public class NotificationConfig {
     }
 
     public String getDaysOfWeek() {
-        return DaysOfWeek;
+        int DOW = Integer.parseInt(DaysOfWeek);
+        String strDOW = "";
+
+        if ((DOW & 1) == 1)
+            strDOW += "SU, ";
+        if ((DOW & 2) == 2)
+            strDOW += "MO, ";
+        if ((DOW & 4) == 4)
+            strDOW += "TU, ";
+        if ((DOW & 8) == 8)
+            strDOW += "WE, ";
+        if ((DOW & 16) == 16)
+            strDOW += "TH, ";
+        if ((DOW & 32) == 32)
+            strDOW += "FR, ";
+        if ((DOW & 64) == 64)
+            strDOW += "SA";
+        return strDOW;
     }
 
     public void setDaysOfWeek(String DaysOfWeek) {

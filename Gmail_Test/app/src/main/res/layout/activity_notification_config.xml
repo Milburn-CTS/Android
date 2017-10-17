@@ -6,17 +6,40 @@
     android:layout_height="match_parent"
     tools:context="com.continentaltechsolutions.dell.gmail_test.activity.NotificationConfigActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <com.continentaltechsolutions.dell.libmultispinner.MultiSelectionSpinner
+        android:id="@+id/spinnerDaysOfWeek"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvFromTime"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp"
+        android:textColor="?attr/colorControlNormal"
+        android:layout_alignBottom="@+id/tvToTime"
+        android:layout_alignStart="@+id/tvToTime"
+        android:layout_marginBottom="41dp" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvToTime"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="18sp"
+        android:textColor="?attr/colorControlNormal"
+        android:layout_below="@+id/spinnerDaysOfWeek"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="83dp" />
+
+    <Spinner
+        android:id="@+id/spinnerEnabledNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tvToTime"
+        android:layout_marginTop="68dp" />
 
 </RelativeLayout>

@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:id="@+id/message_container1"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:orientation="vertical"
@@ -44,11 +44,9 @@
             android:id="@+id/tvDaysOfWeek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lines="1"
             android:textColor="@color/subject"
             android:textSize="@dimen/msg_text_secondary"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvFromTime"
@@ -68,7 +66,7 @@
             android:lines="1"
             android:textColor="@color/subject"
             android:textSize="@dimen/msg_text_secondary"
-            android:textStyle="bold"  />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

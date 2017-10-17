@@ -11,27 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.GmailActivity"
             android:label="@string/title_activity_gmail"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.ImgBtnActivity" >
+        <activity android:name=".activity.ImgBtnActivity" />
+        <activity android:name=".activity.Gmail_Empty_Activity" />
+        <activity android:name=".activity.ViewNotificationConfigActivity"></activity>
 
-        </activity>
-        <activity android:name=".activity.Gmail_Empty_Activity">
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="051636a79ea229ca7f19b413e7480f7a30183ba7" />
 
-        </activity>
         <activity android:name=".activity.NotificationConfigActivity">
+
+        </activity>
+        <activity android:name=".activity.TimePickerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="051636a79ea229ca7f19b413e7480f7a30183ba7" />
     </application>
 
 </manifest>

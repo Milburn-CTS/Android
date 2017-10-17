@@ -12,7 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.continentaltechsolutions.dell.gmail_test.R;
+import com.continentaltechsolutions.dell.gmail_test.helper.CircleTransform;
 import com.continentaltechsolutions.dell.gmail_test.helper.FlipAnimator;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationConfig;
 
@@ -92,11 +95,11 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
         NotificationConfig message = notificationConfigList.get(position);
 
         // displaying text view data
-        holder.tvEventID.setText(String.valueOf(message.getEventID()));
-        holder.tvEnabledNotifications.setText(message.getEnabledNotifications());
-        holder.tvDaysOfWeek.setText(message.getDaysOfWeek());
-        holder.tvFromTime.setText(message.getFromTime());
-        holder.tvToTime.setText(message.getToTime());
+        holder.tvEventID.setText("Event ID: " + String.valueOf(message.getEventID()));
+        holder.tvEnabledNotifications.setText("Notify: " + message.getEnabledNotifications());
+        holder.tvDaysOfWeek.setText("DOW: " + message.getDaysOfWeek());
+        holder.tvFromTime.setText("From: " + message.getFromTime());
+        holder.tvToTime.setText("To: " + message.getToTime());
 
         // displaying the first letter of From in icon text
         holder.iconText.setText(message.getFrom().substring(0, 1));
@@ -162,11 +165,23 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
                     .into(holder.imgProfile);
             holder.imgProfile.setColorFilter(null);
             holder.iconText.setVisibility(View.GONE);
-        } else {*/
+        } else {
             holder.imgProfile.setImageResource(R.drawable.bg_circle);
             holder.imgProfile.setColorFilter(message.getColor());
             holder.iconText.setVisibility(View.VISIBLE);
-        //}
+        }*/
+        /*Glide.with(mContext).load(message.get())
+                .thumbnail(0.5f)
+                .crossFade()
+                .transform(new CircleTransform(mContext))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.imgProfile);
+        holder.imgProfile.setColorFilter(null);
+        holder.iconText.setVisibility(View.GONE);*/
+
+        holder.imgProfile.setImageResource(R.drawable.bg_circle);
+        holder.imgProfile.setColorFilter(message.getColor());
+        holder.iconText.setVisibility(View.VISIBLE);
     }
 
     private void applyIconAnimation(NConfigAdapter.MyViewHolder1 holder, int position) {

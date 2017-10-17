@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rl"
+    tools:context="com.continentaltechsolutions.dell.gmail_test.activity.TimePickerActivity">
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp"
+        android:layout_marginTop="126dp" />
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onButtonClicked"
+        android:text="Set Time"
+        android:layout_marginTop="34dp"
+        android:layout_below="@+id/tv"
+        android:layout_centerHorizontal="true" />
+
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_above="@+id/btnDate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="36dp" />
+    <Button
+        android:id="@+id/btnDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Date"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/btn"
+        android:layout_marginBottom="77dp" />
+
+</RelativeLayout>
