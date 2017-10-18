@@ -4,6 +4,24 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--
+        res/layout/main_activity.xml           # For handsets (smaller than 600dp available width)
+        res/layout-sw600dp/activity_img_btn.xml   # For 7” tablets (600dp wide and bigger)
+        res/layout-sw720dp/main_activity.xml   # For 10” tablets (720dp wide and bigger)
+        res/layout-sw600dp/main_activity.xml   # For 7” tablets (600dp wide and bigger)
+
+        res/layout-w720dp/main_activity.xml   # For 10” tablets (720dp wide and bigger)
+        res/layout-sw600dp-land/main_activity.xml   # For 7” tablets in landscape (600dp wide and bigger)
+        res/layout-w720dp-land/main_activity.xml   # For 10” tablets in landscape (720dp wide and bigger)
+    -->
+
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:requiresSmallestWidthDp="600"
+        android:smallScreens="false"
+        android:xlargeScreens="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,22 +36,23 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.ImgBtnActivity" />
         <activity android:name=".activity.Gmail_Empty_Activity" />
-        <activity android:name=".activity.ViewNotificationConfigActivity"></activity>
+        <activity android:name=".activity.ViewNotificationConfigActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="051636a79ea229ca7f19b413e7480f7a30183ba7" />
 
         <activity android:name=".activity.NotificationConfigActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity android:name=".activity.TimePickerActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        <activity android:name=".activity.MultipleScreenSizesMain2Activity"></activity>
     </application>
 
 </manifest>

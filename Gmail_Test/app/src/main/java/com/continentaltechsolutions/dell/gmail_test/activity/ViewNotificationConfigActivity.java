@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.continentaltechsolutions.dell.gmail_test.R;
 import com.continentaltechsolutions.dell.gmail_test.adapter.NConfigAdapter;
+import com.continentaltechsolutions.dell.gmail_test.helper.Constants;
 import com.continentaltechsolutions.dell.gmail_test.helper.DividerItemDecoration;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationConfig;
 import com.continentaltechsolutions.dell.gmail_test.network.ApiClient;
@@ -40,17 +41,12 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     private ActionMode actionMode;
 
     private static final String TAG = "ViewNotificationConfigActivity";
-    int DEVICEID;
-    String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_notification_config_view);
-
-        DEVICEID = 1;
-        token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InN1ZGhpckBvZHhlbC5jb20iLCJuYmYiOjE1MDc3MjEwMDIsImV4cCI6MTUxNTYwNTAwMiwiaWF0IjoxNTA3NzIxMDAyfQ.R9LgFf8XadRi_LtgkDL-sLXFL3rxeQrLQNWC9UVDkT4";
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
@@ -88,8 +84,8 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
                 ApiClient.getClient().create(NotificationConfigInterface.class);
 
         LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
-        params.put("DeviceID", String.valueOf(DEVICEID));
-        Call<List<NotificationConfig>> call = apiService.getNotificationConfig(params, token);
+        params.put("DeviceID", String.valueOf(Constants.DEVICE_ID));
+        Call<List<NotificationConfig>> call = apiService.getNotificationConfig(params, Constants.JWT_TOKEN);
         call.enqueue(new Callback<List<NotificationConfig>>() {
             @Override
             public void onResponse(Call<List<NotificationConfig>> call, Response<List<NotificationConfig>> response) {
