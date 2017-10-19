@@ -1,10 +1,12 @@
 package com.continentaltechsolutions.dell.gmail_test.model;
 
+import java.io.Serializable;
+
 /**
  * Created by DELL on 15-Oct-17.
  */
 
-public class NotificationConfig {
+public class NotificationConfig implements Serializable {
     private int EventID;
     private String EnabledNotifications;
     private String DaysOfWeek;

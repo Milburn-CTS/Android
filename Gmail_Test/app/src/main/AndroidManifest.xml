@@ -36,23 +36,22 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.ImgBtnActivity" />
         <activity android:name=".activity.Gmail_Empty_Activity" />
-        <activity android:name=".activity.ViewNotificationConfigActivity" />
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="051636a79ea229ca7f19b413e7480f7a30183ba7" />
-
-        <activity android:name=".activity.NotificationConfigActivity">
-            <intent-filter>
+        <activity android:name=".activity.ViewNotificationConfigActivity" >
+        <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <activity android:name=".activity.TimePickerActivity">
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="051636a79ea229ca7f19b413e7480f7a30183ba7" />
+
+        <activity android:name=".activity.NotificationConfigActivity">
 
         </activity>
-        <activity android:name=".activity.MultipleScreenSizesMain2Activity"></activity>
+        <activity android:name=".activity.TimePickerActivity"></activity>
+        <activity android:name=".activity.MultipleScreenSizesMain2Activity" />
     </application>
 
 </manifest>

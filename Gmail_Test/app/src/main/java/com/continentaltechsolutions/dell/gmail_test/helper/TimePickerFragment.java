@@ -62,10 +62,10 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         if (flag == FLAG_FROM_TIME) {
             TextView editTextFromTime = (TextView) getActivity().findViewById(R.id.tvFromTime);
-            editTextFromTime.setText(hr + " : " + min);
+            editTextFromTime.setText(hr + ":" + min + ":" + "00");
         } else if (flag == FLAG_TO_TIME) {
             TextView editTextToTime = (TextView) getActivity().findViewById(R.id.tvToTime);
-            editTextToTime.setText(hr + " : " + min);
+            editTextToTime.setText(hr + ":" + min + ":" + "00");
         }
     }
 }

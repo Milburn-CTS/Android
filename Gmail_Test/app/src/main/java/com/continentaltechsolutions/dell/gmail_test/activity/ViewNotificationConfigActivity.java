@@ -1,5 +1,6 @@
 package com.continentaltechsolutions.dell.gmail_test.activity;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,7 +23,10 @@ import com.continentaltechsolutions.dell.gmail_test.network.ApiClient;
 import com.continentaltechsolutions.dell.gmail_test.network.NotificationConfigInterface;
 
 import com.crashlytics.android.Crashlytics;
+
 import io.fabric.sdk.android.Fabric;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,11 +35,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewNotificationConfigActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, NConfigAdapter.NotificationConfigAdapterListener{
+public class ViewNotificationConfigActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, NConfigAdapter.NotificationConfigAdapterListener {
     private List<NotificationConfig> notificationConfigList = new ArrayList<>();
     private RecyclerView recyclerView;
     private NConfigAdapter mAdapter;
-    //private  NCAdapter mAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ActionModeCallback actionModeCallback;
     private ActionMode actionMode;
@@ -53,7 +56,6 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
         swipeRefreshLayout.setOnRefreshListener(this);
 
         mAdapter = new NConfigAdapter(this, notificationConfigList, this);
-        //mAdapter = new NCAdapter(this, notificationConfigList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -85,6 +87,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
 
         LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
         params.put("DeviceID", String.valueOf(Constants.DEVICE_ID));
+        params.put("EventID", String.valueOf(Constants.EVENT_ID));
         Call<List<NotificationConfig>> call = apiService.getNotificationConfig(params, Constants.JWT_TOKEN);
         call.enqueue(new Callback<List<NotificationConfig>>() {
             @Override
@@ -97,17 +100,16 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
 
                 // TODO - avoid looping
                 // the loop was performed to add colors to each message
-                if(response.body() != null){
-                for (NotificationConfig notificationConfig : response.body()) {
-                    // generate a random color
-                    notificationConfig.setColor(getRandomMaterialColor("400"));
-                    notificationConfigList.add(notificationConfig);
-                }
+                if (response.body() != null) {
+                    for (NotificationConfig notificationConfig : response.body()) {
+                        // generate a random color
+                        notificationConfig.setColor(getRandomMaterialColor("400"));
+                        notificationConfigList.add(notificationConfig);
+                    }
 
-                mAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
-                }
-                else {
+                    mAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getApplicationContext(), "Not Found... Please try again", Toast.LENGTH_LONG).show();
                 }
@@ -261,5 +263,33 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
             }
             mAdapter.notifyDataSetChanged();*/
         }
-}
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_add) {
+            Toast.makeText(getApplicationContext(), "Add Notification Config...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(),NotificationConfigActivity.class);
+            intent.putExtra("NotificationConfigList", (Serializable) notificationConfigList);
+            intent.putExtra("EventID",Constants.EVENT_ID);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

@@ -1,15 +1,14 @@
 package com.continentaltechsolutions.dell.gmail_test.activity;
 
-import android.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,13 +19,15 @@ import com.continentaltechsolutions.dell.gmail_test.helper.TimePickerFragment;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationConfig;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationTypes;
 import com.continentaltechsolutions.dell.gmail_test.network.ApiClient;
-import com.continentaltechsolutions.dell.gmail_test.network.NotificationConfigInterface;
 import com.continentaltechsolutions.dell.gmail_test.network.NotificationTypesInterface;
 import com.continentaltechsolutions.dell.libmultispinner.MultiSelectionSpinner;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +35,7 @@ import retrofit2.Response;
 
 public class NotificationConfigActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, android.view.View.OnClickListener, AdapterView.OnItemSelectedListener{
 
+    private List<NotificationConfig> notificationConfigList = new ArrayList<>();
     MultiSelectionSpinner mssarrayDaysOfWeek;
     private Spinner spinnerDOW, spinnerEnabledNotifications;
     final HashMap<String, String> spinnerMapEnabledNotifications = new HashMap<String, String>();
@@ -41,7 +43,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     private Button btnAdd;
     private TimePickerFragment mTimePickerFragment;
     private int EventID, counterDOW = 0;
-    private String EnabledNotifications, EnabledNotificationsID;
+    private String EnabledNotifications, EnabledNotificationsID, incomingstrDOW = null;
     final Integer[] finalDOWList = {0, 0, 0, 0, 0, 0, 0}; //TODO NOT REQUIRED
     public String result1 = null; //TODO CHANGE TO SENSIBLE NAME
 
@@ -63,7 +65,9 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         mssarrayServiceCategory.setListener(this);
 
         //Receiving from Intent
-        EventID = 4;
+        Intent i = getIntent();
+        EventID = i.getIntExtra("EventID", 0);
+        notificationConfigList = (List<NotificationConfig>) i.getSerializableExtra("NotificationConfigList");
 
         tvFromTime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -84,19 +88,90 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NotificationConfig notificationConfig = new NotificationConfig();
 
                 //Check Validations
                 if (validateNotificationConfig()) {
                     return;
                 } else {
+                    retrieveDOW();
                     //Check Existing Time Conflicts and From Time To Time conflicts
+                    //Check From Time To Time conflicts
+                    try {
+                        String incomingstrFromTime = tvFromTime.getText().toString();
+                        String incomingstrToTime = tvToTime.getText().toString();
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                        //sdf.setTimeZone(TimeZone.getTimeZone("IST"));
+                        Date incomingFromTime = sdf.parse(incomingstrFromTime);
+                        Date incomingToTime = sdf.parse(incomingstrToTime);
+                        if (incomingFromTime.after(incomingToTime)) {
+                            // Start time cannot be greater than or equal to end time
+                            Toast.makeText(getApplicationContext(), "From time cannot be greater than or equal to To time", Toast.LENGTH_LONG).show();
+                            tvToTime.setError("From time cannot be greater than or equal to To time");
+                            return;
+                        }
+
+                        if (incomingFromTime.before(incomingToTime)) {
+                            // Continue and Check for Existing Time Conflicts
+                            for (NotificationConfig nc : notificationConfigList) {
+                                if (nc.getEnabledNotifications().equalsIgnoreCase(spinnerEnabledNotifications.getSelectedItem().toString())) { //Check for EnabledNotifications eg. APP, EMAIL etc
+                                    //Check for DOW
+                                    String existingstrdow = nc.getDaysOfWeek();
+                                    String[] existingdowList = existingstrdow.split("\\s*,\\s*");
+
+                                    String[] sds = incomingstrDOW.split("\\s*,\\s*");
+                                    for (String _dow : existingdowList) {
+                                        for (String _dow1 : sds) {
+
+                                            if (_dow.equalsIgnoreCase(_dow1)) {
+                                                //Toast.makeText(getApplicationContext(), "Contains" + _dow, Toast.LENGTH_LONG).show();
+                                                String existingstrFromTime = nc.getFromTime();
+                                                String existingstrToTime = nc.getToTime();
+                                                Date existingFromTime = sdf.parse(existingstrFromTime);
+                                                Date existingToTime = sdf.parse(existingstrToTime);
+
+                                                if (incomingFromTime.after(existingFromTime) & incomingFromTime.after(existingToTime)) {
+                                                    Toast.makeText(getApplicationContext(), "Conflict in existing time. Please try with different time", Toast.LENGTH_LONG).show();
+                                                    tvFromTime.setError("Conflict in existing time. Please try with different time");
+                                                    return;
+                                                }
+                                                if (incomingToTime.after(existingFromTime) & incomingToTime.after(existingToTime)){
+                                                    Toast.makeText(getApplicationContext(), "Conflict in existing time. Please try with different time", Toast.LENGTH_LONG).show();
+                                                    tvFromTime.setError("Conflict in existing time. Please try with different time");
+                                                    return;
+                                                }
+                                                if (existingFromTime.after(incomingFromTime) & existingFromTime.after(incomingToTime)) {
+                                                    Toast.makeText(getApplicationContext(), "Conflict in existing time. Please try with different time", Toast.LENGTH_LONG).show();
+                                                    tvToTime.setError("Conflict in existing time. Please try with different time");
+                                                    return;
+                                                }
+                                                if (existingToTime.after(incomingFromTime) & existingToTime.after(incomingToTime)) {
+                                                    Toast.makeText(getApplicationContext(), "Conflict in existing time. Please try with different time", Toast.LENGTH_LONG).show();
+                                                    tvToTime.setError("Conflict in existing time. Please try with different time");
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (incomingFromTime.equals(incomingToTime)) {
+                            // Start time cannot be equal to end time
+                            Toast.makeText(getApplicationContext(), "From time cannot be equal to To time", Toast.LENGTH_LONG).show();
+                            tvToTime.setError("From time cannot be equal to To time");
+                            return;
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Exception: " + e, Toast.LENGTH_LONG).show();
+                    }
                     if(!true){
 
                         return;
                     }
                     else {
-                        retrieveDOW();
+                        Toast.makeText(getApplicationContext(), "Continue....", Toast.LENGTH_LONG).show();
+                        NotificationConfig notificationConfig = new NotificationConfig();
 
                         //Get EventID
                         notificationConfig.setEventID(EventID);
@@ -118,6 +193,16 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
 
     private Boolean validateNotificationConfig(){
         boolean done = false;
+
+        //EnabledNotifications
+        View selectedView = spinnerEnabledNotifications.getSelectedView();
+        if (spinnerEnabledNotifications.getSelectedItem().toString().equals("Please Select Notification Type...")) {
+            TextView selectedTextView = (TextView) selectedView;
+            done = true;
+            Toast.makeText(NotificationConfigActivity.this, "Please Select Notification Type...", Toast.LENGTH_LONG).show();
+            selectedTextView.setError("Please Select Notification Type...");
+        }
+
         //DaysOfWeek
         if (TextUtils.isEmpty(result1)) {
             View selectedViewS2 = spinnerDOW.getSelectedView();
@@ -127,15 +212,6 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
                 Toast.makeText(NotificationConfigActivity.this, "Please Select atleast one day of the week", Toast.LENGTH_LONG).show();
                 selectedTextViewS2.setError("Please Select atleast one day of the week");
             }
-        }
-
-        //EnabledNotifications
-        View selectedView = spinnerEnabledNotifications.getSelectedView();
-        if (spinnerEnabledNotifications.getSelectedItem().toString().equals("Please Select Notification Type...")) {
-            TextView selectedTextView = (TextView) selectedView;
-            done = true;
-            Toast.makeText(NotificationConfigActivity.this, "Please Select Notification Type...", Toast.LENGTH_LONG).show();
-            selectedTextView.setError("Please Select Notification Type...");
         }
 
         //FromTime
@@ -163,35 +239,43 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         }
         if (result1 != null) {
             String[] Result1Array = result1.split(",");
+            incomingstrDOW = "";
             for (int i = 0; i < Result1Array.length; i++) {
                 switch (Result1Array[i].trim())//remove white space
                 {//SETTING value to 0 or 1 if selected from spinner
                     case "Sunday":
                         finalDOWList[0] = 1;
+                        incomingstrDOW += "SU, ";
                         counterDOW += 1;
                         break;
                     case "Monday":
                         finalDOWList[1] = 1;
+                        incomingstrDOW += "MO, ";
                         counterDOW += 2;
                         break;
                     case "Tuesday":
                         finalDOWList[2] = 1;
+                        incomingstrDOW += "TU, ";
                         counterDOW += 4;
                         break;
                     case "Wednesday":
                         finalDOWList[3] = 1;
+                        incomingstrDOW += "WE, ";
                         counterDOW += 8;
                         break;
                     case "Thursday":
                         finalDOWList[4] = 1;
+                        incomingstrDOW += "TH, ";
                         counterDOW += 16;
                         break;
                     case "Friday":
                         finalDOWList[5] = 1;
+                        incomingstrDOW += "FR, ";
                         counterDOW += 32;
                         break;
                     case "Saturday":
                         finalDOWList[6] = 1;
+                        incomingstrDOW += "SA, ";
                         counterDOW += 64;
                         break;
                     default:
@@ -240,6 +324,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
 
             @Override
             public void onFailure(Call<List<NotificationTypes>> call, Throwable t) {
+                finish();
                 Toast.makeText(getApplicationContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
