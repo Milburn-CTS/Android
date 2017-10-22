@@ -73,7 +73,6 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
         }
     }
 
-
     public NConfigAdapter(Context mContext, List<NotificationConfig> messages, NotificationConfigAdapterListener listener) {
         this.mContext = mContext;
         this.notificationConfigList = messages;
@@ -156,34 +155,6 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
     }
 
     private void applyProfilePicture(NConfigAdapter.MyViewHolder1 holder, NotificationConfig message) {
-        /*if (!TextUtils.isEmpty(message.getPicture())) {
-            Glide.with(mContext).load(message.getPicture())
-                    .thumbnail(0.5f)
-                    .crossFade()
-                    .transform(new CircleTransform(mContext))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.imgProfile);
-            holder.imgProfile.setColorFilter(null);
-            holder.iconText.setVisibility(View.GONE);
-        } else {
-            holder.imgProfile.setImageResource(R.drawable.bg_circle);
-            holder.imgProfile.setColorFilter(message.getColor());
-            holder.iconText.setVisibility(View.VISIBLE);
-        }*/
-
-        /*Glide.with(mContext).load(message.get())
-                .thumbnail(0.5f)
-                .crossFade()
-                .transform(new CircleTransform(mContext))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.imgProfile);
-        holder.imgProfile.setColorFilter(null);
-        holder.iconText.setVisibility(View.GONE);*/
-
-//        holder.imgProfile.setImageResource(R.drawable.bg_circle);
-//        holder.imgProfile.setColorFilter(message.getColor());
-//        holder.iconText.setVisibility(View.VISIBLE);
-
 
         if (message.getEnabledNotifications().equalsIgnoreCase("APP")) {
             Glide.with(mContext).load(R.drawable.app_icon)
@@ -221,8 +192,7 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
                     .into(holder.imgProfile);
             holder.imgProfile.setColorFilter(null);
             holder.iconText.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             holder.imgProfile.setImageResource(R.drawable.bg_circle);
             holder.imgProfile.setColorFilter(message.getColor());
             holder.iconText.setVisibility(View.VISIBLE);
@@ -250,7 +220,6 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
             }
         }
     }
-
 
     // As the views will be reused, sometimes the icon appears as
     // flipped because older view is reused. Reset the Y-axis to 0

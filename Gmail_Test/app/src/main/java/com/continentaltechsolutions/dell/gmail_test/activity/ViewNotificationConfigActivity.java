@@ -78,8 +78,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     }
 
     /**
-     * Fetches mail messages by making HTTP request
-     * url: http://api.androidhive.info/json/inbox.json
+     * Fetches mail NotificationConfig by making HTTP request
      */
     private void getNotificationConfig() {
         swipeRefreshLayout.setRefreshing(true);
@@ -113,7 +112,8 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getApplicationContext(), "Not Found... Please try again", Toast.LENGTH_LONG).show();
+                    mAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "No Notification Config Found. Try adding a new one!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -180,7 +180,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     public void onMessageRowClicked(int position) {
         // verify whether action mode is enabled or not
         // if enabled, change the row state to activated
-       /* if (mAdapter.getSelectedItemCount() > 0) {
+        if (mAdapter.getSelectedItemCount() > 0) {
             enableActionMode(position);
         } else {
             // read the message which removes bold from the row
@@ -189,8 +189,8 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
             notificationConfigList.set(position, message);
             mAdapter.notifyDataSetChanged();
 
-            Toast.makeText(getApplicationContext(), "Clicked...", Toast.LENGTH_SHORT).show();
-        }*/
+            //Toast.makeText(getApplicationContext(), "Clicked...", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -213,7 +213,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
         if (count == 0) {
             actionMode.finish();
         } else {
-           actionMode.setTitle(String.valueOf(count));
+            actionMode.setTitle(String.valueOf(count));
             actionMode.invalidate();
         }
     }
@@ -249,7 +249,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            /*mAdapter.clearSelections();
+            mAdapter.clearSelections();
             swipeRefreshLayout.setEnabled(true);
             actionMode = null;
             recyclerView.post(new Runnable() {
@@ -258,7 +258,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
                     mAdapter.resetAnimationIndex();
                     // mAdapter.notifyDataSetChanged();
                 }
-            });*/
+            });
         }
 
         // deleting the messages from recycler view
@@ -275,8 +275,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     }
 
     //Rest Call to delete notificationConfigList
-    private void deleteNotificationConfigList(List<NotificationConfig> pNotificationConfig)
-    {
+    private void deleteNotificationConfigList(List<NotificationConfig> pNotificationConfig) {
         swipeRefreshLayout.setRefreshing(true);
 
         NotificationConfigInterface apiService =
@@ -284,6 +283,7 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
 
         LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
         params.put("id", String.valueOf(Constants.DEVICE_ID));
+        params.put("EventID", String.valueOf(Constants.EVENT_ID));
         Call<ResponseBody> call = apiService.putNotificationConfigDelete(params, pNotificationConfig, Constants.JWT_TOKEN);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -317,9 +317,9 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
             Toast.makeText(getApplicationContext(), "Add Notification Config...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(),NotificationConfigActivity.class);
+            Intent intent = new Intent(getApplicationContext(), NotificationConfigActivity.class);
             intent.putExtra("NotificationConfigList", (Serializable) notificationConfigList);
-            intent.putExtra("EventID",Constants.EVENT_ID);
+            intent.putExtra("EventID", Constants.EVENT_ID);
             startActivity(intent);
             //
             // finish();

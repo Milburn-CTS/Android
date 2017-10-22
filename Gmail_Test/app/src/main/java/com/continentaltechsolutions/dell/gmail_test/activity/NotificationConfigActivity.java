@@ -1,6 +1,8 @@
 package com.continentaltechsolutions.dell.gmail_test.activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -29,14 +31,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TimeZone;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NotificationConfigActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, android.view.View.OnClickListener, AdapterView.OnItemSelectedListener{
+public class NotificationConfigActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, android.view.View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private List<NotificationConfig> notificationConfigList = new ArrayList<>();
     MultiSelectionSpinner mssarrayDaysOfWeek;
@@ -46,9 +47,9 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     private Button btnAdd;
     private TimePickerFragment mTimePickerFragment;
     private int EventID, counterDOW = 0;
-    private String EnabledNotifications, EnabledNotificationsID, incomingstrDOW = null;
-    final Integer[] finalDOWList = {0, 0, 0, 0, 0, 0, 0}; //TODO NOT REQUIRED
-    public String result1 = null; //TODO CHANGE TO SENSIBLE NAME
+    private String selectedDOW = null, incomingstrDOW = null;
+    private View mProgressView;
+    private View mNotificationConfigFormView;
 
     private static final String TAG = "NotificationConfig";
 
@@ -57,6 +58,8 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_config);
 
+        mNotificationConfigFormView = findViewById(R.id.notification_config_form);
+        mProgressView = findViewById(R.id.notification_config_progress);
         spinnerEnabledNotifications = (Spinner) findViewById(R.id.spinnerEnabledNotifications);
         spinnerDOW = (Spinner) findViewById(R.id.spinnerDaysOfWeek);
         tvFromTime = (TextView) findViewById(R.id.tvFromTime);
@@ -70,7 +73,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         //Receiving from Intent
         Intent i = getIntent();
         EventID = i.getIntExtra("EventID", 0);
-        if(EventID == 0) {
+        if (EventID == 0) {
             Toast.makeText(getApplicationContext(), "Previous page did not load correctly. Please wait till the page completely loads and then Add again", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -80,7 +83,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
             public void onClick(View v) {
                 mTimePickerFragment = new TimePickerFragment();
                 mTimePickerFragment.setFlag(TimePickerFragment.FLAG_FROM_TIME);
-                mTimePickerFragment.show(getFragmentManager(),"TimePicker");
+                mTimePickerFragment.show(getFragmentManager(), "TimePicker");
             }
         });
 
@@ -88,7 +91,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
             public void onClick(View v) {
                 mTimePickerFragment = new TimePickerFragment();
                 mTimePickerFragment.setFlag(TimePickerFragment.FLAG_TO_TIME);
-                mTimePickerFragment.show(getFragmentManager(),"TimePicker");
+                mTimePickerFragment.show(getFragmentManager(), "TimePicker");
             }
         });
 
@@ -140,7 +143,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
                                                     tvFromTime.setError("Conflict in existing time. Please try with different time");
                                                     return;
                                                 }
-                                                if (incomingToTime.after(existingFromTime) & incomingToTime.after(existingToTime)){
+                                                if (incomingToTime.after(existingFromTime) & incomingToTime.after(existingToTime)) {
                                                     Toast.makeText(getApplicationContext(), "Conflict in existing time. Please try with different time", Toast.LENGTH_LONG).show();
                                                     tvFromTime.setError("Conflict in existing time. Please try with different time");
                                                     return;
@@ -171,12 +174,11 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), "Exception: " + e, Toast.LENGTH_LONG).show();
                     }
-                    if(!true){
+                    if (!true) {
 
                         return;
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "Continue....", Toast.LENGTH_LONG).show();
+                    } else {
+                        //Toast.makeText(getApplicationContext(), "Continue....", Toast.LENGTH_LONG).show();
                         NotificationConfig notificationConfig = new NotificationConfig();
 
                         //Get EventID
@@ -197,12 +199,12 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         });
 
         populateNotificationTypes();
+
     }
 
     //Rest Call to add notificationConfig
     private void addNotificationConfig(NotificationConfig notificationConfig) {
-        //swipeRefreshLayout.setRefreshing(true); //TO
-
+        showProgress(true);
         NotificationConfigInterface apiService =
                 ApiClient.getClient().create(NotificationConfigInterface.class);
 
@@ -212,36 +214,42 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Toast.makeText(getApplicationContext(), "Added Notification Config Successfully" , Toast.LENGTH_LONG).show();
-                finish();
+                try {
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), response.body().string(), Toast.LENGTH_LONG).show(); //"Added Notification Config Successfully"
+                    finish();
+                }catch (Exception e)
+                {
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                finish();
+                showProgress(false);
                 Toast.makeText(getApplicationContext(), "Falied to Add Notification Config. Please try again. " + t.getMessage(), Toast.LENGTH_LONG).show();
-                //swipeRefreshLayout.setRefreshing(false);
+                finish();
             }
         });
     }
 
-    private Boolean validateNotificationConfig(){
+    private Boolean validateNotificationConfig() {
         boolean done = false;
 
         //EnabledNotifications
-        View selectedView = spinnerEnabledNotifications.getSelectedView();
+        View selectedViewEnabledNotifications = spinnerEnabledNotifications.getSelectedView();
         if (spinnerEnabledNotifications.getSelectedItem().toString().equals("Please Select Notification Type...")) {
-            TextView selectedTextView = (TextView) selectedView;
+            TextView selectedTextView = (TextView) selectedViewEnabledNotifications;
             done = true;
             Toast.makeText(NotificationConfigActivity.this, "Please Select Notification Type...", Toast.LENGTH_LONG).show();
             selectedTextView.setError("Please Select Notification Type...");
         }
 
         //DaysOfWeek
-        if (TextUtils.isEmpty(result1)) {
-            View selectedViewS2 = spinnerDOW.getSelectedView();
-            if (selectedViewS2 != null && selectedViewS2 instanceof TextView) {
-                TextView selectedTextViewS2 = (TextView) selectedViewS2;
+        if (TextUtils.isEmpty(selectedDOW)) {
+            View selectedViewDOW = spinnerDOW.getSelectedView();
+            if (selectedViewDOW != null && selectedViewDOW instanceof TextView) {
+                TextView selectedTextViewS2 = (TextView) selectedViewDOW;
                 done = true;
                 Toast.makeText(NotificationConfigActivity.this, "Please Select atleast one day of the week", Toast.LENGTH_LONG).show();
                 selectedTextViewS2.setError("Please Select atleast one day of the week");
@@ -266,50 +274,38 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     }
 
     private void retrieveDOW() {
-        EnabledNotifications = spinnerEnabledNotifications.getSelectedItem().toString();  //TODO NOT REQUIRED
-        EnabledNotificationsID = spinnerMapEnabledNotifications.get(EnabledNotifications);
-        if (spinnerEnabledNotifications.getSelectedItem().toString() != "Please Select Notification Type...") {
-
-        }
-        if (result1 != null) {
-            String[] Result1Array = result1.split(",");
+        if (selectedDOW != null) {
+            String[] Result1Array = selectedDOW.split(",");
             incomingstrDOW = "";
             for (int i = 0; i < Result1Array.length; i++) {
                 switch (Result1Array[i].trim())//remove white space
                 {//SETTING value to 0 or 1 if selected from spinner
                     case "Sunday":
-                        finalDOWList[0] = 1;
                         incomingstrDOW += "SU, ";
                         counterDOW += 1;
                         break;
                     case "Monday":
-                        finalDOWList[1] = 1;
                         incomingstrDOW += "MO, ";
                         counterDOW += 2;
                         break;
                     case "Tuesday":
-                        finalDOWList[2] = 1;
                         incomingstrDOW += "TU, ";
                         counterDOW += 4;
                         break;
                     case "Wednesday":
-                        finalDOWList[3] = 1;
                         incomingstrDOW += "WE, ";
                         counterDOW += 8;
                         break;
                     case "Thursday":
-                        finalDOWList[4] = 1;
                         incomingstrDOW += "TH, ";
                         counterDOW += 16;
                         break;
                     case "Friday":
-                        finalDOWList[5] = 1;
                         incomingstrDOW += "FR, ";
                         counterDOW += 32;
                         break;
                     case "Saturday":
-                        finalDOWList[6] = 1;
-                        incomingstrDOW += "SA, ";
+                        incomingstrDOW += "SA, "; //Comma not required
                         counterDOW += 64;
                         break;
                     default:
@@ -321,7 +317,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
 
     private void populateNotificationTypes() {
         //TODO: Filter SMS
-        //TODO: Add ProgressBar
+        showProgress(true);
         NotificationTypesInterface apiService =
                 ApiClient.getClient().create(NotificationTypesInterface.class);
 
@@ -330,37 +326,38 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
             @Override
             public void onResponse(Call<List<NotificationTypes>> call, Response<List<NotificationTypes>> response) {
 
-                if(response.body() != null){
+                if (response.body() != null) {
                     String[] spinnerArrayEnabledNotifications = new String[response.body().size() + 1];
-                    Log.e(TAG, "NotificationTypes.size() " + String.valueOf(response.body().size()));
-                    Log.e(TAG, "spinnerArrayEnabledNotifications.length " + String.valueOf(spinnerArrayEnabledNotifications.length));
+                    Log.w(TAG, "NotificationTypes.size() " + String.valueOf(response.body().size()));
+                    Log.w(TAG, "spinnerArrayEnabledNotifications.length " + String.valueOf(spinnerArrayEnabledNotifications.length));
                     spinnerMapEnabledNotifications.put("Please Select Notification Type...", "0");
                     spinnerArrayEnabledNotifications[0] = "Please Select Notification Type...";
-                    Log.e(TAG, "spinnerArray[0] " + spinnerArrayEnabledNotifications[0]);
+                    Log.w(TAG, "spinnerArray[0] " + spinnerArrayEnabledNotifications[0]);
                     for (NotificationTypes notificationTypes : response.body()) {
-
                         //notificationConfigList.add(notificationConfig);
                         for (int i = 0; i < response.body().size(); i++) {
                             spinnerMapEnabledNotifications.put(response.body().get(i).NotificationType.toString(), String.valueOf(response.body().get(i).ID));
                             spinnerArrayEnabledNotifications[i + 1] = response.body().get(i).NotificationType.toString();
-                            Log.e(TAG, "spinnerArray[" + i + "]" + spinnerArrayEnabledNotifications[i]);
+                            Log.w(TAG, "spinnerArray[" + i + "]" + spinnerArrayEnabledNotifications[i]);
                         }
 
                         ArrayAdapter<String> dataAdapterClients = new ArrayAdapter<String>(NotificationConfigActivity.this, android.R.layout.simple_list_item_1, spinnerArrayEnabledNotifications);
                         dataAdapterClients.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
                         spinnerEnabledNotifications.setAdapter(dataAdapterClients);
-
+                        showProgress(false);
                     }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Not Found... Please try again", Toast.LENGTH_LONG).show();
+                } else {
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), "Notification Types not found... Please try again", Toast.LENGTH_LONG).show();
+                    finish();
                 }
             }
 
             @Override
             public void onFailure(Call<List<NotificationTypes>> call, Throwable t) {
-                finish();
+                showProgress(false);
                 Toast.makeText(getApplicationContext(), "Unable to fetch json: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                finish();
             }
         });
 
@@ -379,12 +376,10 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
 
     @Override
     public String selectedStrings(List<String> strings) {
-        List<String> Newstrings = strings;
-
         String result = ("" + strings.toString().
                 replaceAll("(^.|.$)", "  ").replace(", ", "  , "));
 
-        result1 = result;
+        selectedDOW = result;
         return result;
     }
 
@@ -396,5 +391,14 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    /**
+     * Shows the progress UI and hides the Notification Config form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mNotificationConfigFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 }

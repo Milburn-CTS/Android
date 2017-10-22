@@ -14,7 +14,8 @@ public class NotificationConfig implements Serializable {
     private String ToTime;
     private int color = -1;
 
-    public  NotificationConfig(){}
+    public NotificationConfig() {
+    }
 
     public int getEventID() {
         return EventID;
