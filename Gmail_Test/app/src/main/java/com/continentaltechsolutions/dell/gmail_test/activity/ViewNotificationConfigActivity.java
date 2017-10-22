@@ -30,7 +30,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -145,6 +147,12 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        getNotificationConfig();
+    }
+
+    @Override
     public void onIconClicked(int position) {
         if (actionMode == null) {
             actionMode = startSupportActionMode(actionModeCallback);
@@ -199,15 +207,15 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
     }
 
     private void toggleSelection(int position) {
-       /* mAdapter.toggleSelection(position);
+        mAdapter.toggleSelection(position);
         int count = mAdapter.getSelectedItemCount();
 
         if (count == 0) {
             actionMode.finish();
         } else {
-            actionMode.setTitle(String.valueOf(count));
+           actionMode.setTitle(String.valueOf(count));
             actionMode.invalidate();
-        }*/
+        }
     }
 
     private class ActionModeCallback implements ActionMode.Callback {
@@ -255,14 +263,41 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
 
         // deleting the messages from recycler view
         private void deleteMessages() {
-           /* mAdapter.resetAnimationIndex();
+            mAdapter.resetAnimationIndex();
             List<Integer> selectedItemPositions =
                     mAdapter.getSelectedItems();
             for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
                 mAdapter.removeData(selectedItemPositions.get(i));
+                deleteNotificationConfigList(notificationConfigList);
             }
-            mAdapter.notifyDataSetChanged();*/
+            mAdapter.notifyDataSetChanged();
         }
+    }
+
+    //Rest Call to delete notificationConfigList
+    private void deleteNotificationConfigList(List<NotificationConfig> pNotificationConfig)
+    {
+        swipeRefreshLayout.setRefreshing(true);
+
+        NotificationConfigInterface apiService =
+                ApiClient.getClient().create(NotificationConfigInterface.class);
+
+        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
+        params.put("id", String.valueOf(Constants.DEVICE_ID));
+        Call<ResponseBody> call = apiService.putNotificationConfigDelete(params, pNotificationConfig, Constants.JWT_TOKEN);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(getApplicationContext(), "Deleted Notification Config Successfully", Toast.LENGTH_LONG).show();
+                getNotificationConfig();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Failed to Delete Notification Config. Please try again. " + t.getMessage(), Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -286,7 +321,8 @@ public class ViewNotificationConfigActivity extends AppCompatActivity implements
             intent.putExtra("NotificationConfigList", (Serializable) notificationConfigList);
             intent.putExtra("EventID",Constants.EVENT_ID);
             startActivity(intent);
-            finish();
+            //
+            // finish();
             return true;
         }
 

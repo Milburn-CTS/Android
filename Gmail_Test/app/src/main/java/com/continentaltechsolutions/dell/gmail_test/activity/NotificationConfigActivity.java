@@ -19,6 +19,7 @@ import com.continentaltechsolutions.dell.gmail_test.helper.TimePickerFragment;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationConfig;
 import com.continentaltechsolutions.dell.gmail_test.model.NotificationTypes;
 import com.continentaltechsolutions.dell.gmail_test.network.ApiClient;
+import com.continentaltechsolutions.dell.gmail_test.network.NotificationConfigInterface;
 import com.continentaltechsolutions.dell.gmail_test.network.NotificationTypesInterface;
 import com.continentaltechsolutions.dell.libmultispinner.MultiSelectionSpinner;
 
@@ -26,9 +27,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,6 +70,10 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         //Receiving from Intent
         Intent i = getIntent();
         EventID = i.getIntExtra("EventID", 0);
+        if(EventID == 0) {
+            Toast.makeText(getApplicationContext(), "Previous page did not load correctly. Please wait till the page completely loads and then Add again", Toast.LENGTH_LONG).show();
+            finish();
+        }
         notificationConfigList = (List<NotificationConfig>) i.getSerializableExtra("NotificationConfigList");
 
         tvFromTime.setOnClickListener(new View.OnClickListener() {
@@ -117,12 +124,11 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
                                     //Check for DOW
                                     String existingstrdow = nc.getDaysOfWeek();
                                     String[] existingdowList = existingstrdow.split("\\s*,\\s*");
+                                    String[] incomingdowList = incomingstrDOW.split("\\s*,\\s*");
+                                    for (String edow : existingdowList) {
+                                        for (String idow : incomingdowList) {
 
-                                    String[] sds = incomingstrDOW.split("\\s*,\\s*");
-                                    for (String _dow : existingdowList) {
-                                        for (String _dow1 : sds) {
-
-                                            if (_dow.equalsIgnoreCase(_dow1)) {
+                                            if (edow.equalsIgnoreCase(idow)) {
                                                 //Toast.makeText(getApplicationContext(), "Contains" + _dow, Toast.LENGTH_LONG).show();
                                                 String existingstrFromTime = nc.getFromTime();
                                                 String existingstrToTime = nc.getToTime();
@@ -183,12 +189,40 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
                         notificationConfig.setFromTime(tvFromTime.getText().toString());
                         //Get ToTime
                         notificationConfig.setToTime(tvToTime.getText().toString());
+
+                        addNotificationConfig(notificationConfig);
                     }
                 }
             }
         });
 
         populateNotificationTypes();
+    }
+
+    //Rest Call to add notificationConfig
+    private void addNotificationConfig(NotificationConfig notificationConfig) {
+        //swipeRefreshLayout.setRefreshing(true); //TO
+
+        NotificationConfigInterface apiService =
+                ApiClient.getClient().create(NotificationConfigInterface.class);
+
+        LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
+        params.put("id", String.valueOf(Constants.DEVICE_ID));
+        Call<ResponseBody> call = apiService.putNotificationConfigAdd(params, notificationConfig, Constants.JWT_TOKEN);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(getApplicationContext(), "Added Notification Config Successfully" , Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                finish();
+                Toast.makeText(getApplicationContext(), "Falied to Add Notification Config. Please try again. " + t.getMessage(), Toast.LENGTH_LONG).show();
+                //swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private Boolean validateNotificationConfig(){
@@ -286,6 +320,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     }
 
     private void populateNotificationTypes() {
+        //TODO: Filter SMS
         //TODO: Add ProgressBar
         NotificationTypesInterface apiService =
                 ApiClient.getClient().create(NotificationTypesInterface.class);

@@ -170,6 +170,7 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
             holder.imgProfile.setColorFilter(message.getColor());
             holder.iconText.setVisibility(View.VISIBLE);
         }*/
+
         /*Glide.with(mContext).load(message.get())
                 .thumbnail(0.5f)
                 .crossFade()
@@ -179,9 +180,53 @@ public class NConfigAdapter extends RecyclerView.Adapter<NConfigAdapter.MyViewHo
         holder.imgProfile.setColorFilter(null);
         holder.iconText.setVisibility(View.GONE);*/
 
-        holder.imgProfile.setImageResource(R.drawable.bg_circle);
-        holder.imgProfile.setColorFilter(message.getColor());
-        holder.iconText.setVisibility(View.VISIBLE);
+//        holder.imgProfile.setImageResource(R.drawable.bg_circle);
+//        holder.imgProfile.setColorFilter(message.getColor());
+//        holder.iconText.setVisibility(View.VISIBLE);
+
+
+        if (message.getEnabledNotifications().equalsIgnoreCase("APP")) {
+            Glide.with(mContext).load(R.drawable.app_icon)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .transform(new CircleTransform(mContext))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imgProfile);
+            holder.imgProfile.setColorFilter(null);
+            holder.iconText.setVisibility(View.GONE);
+        } else if (message.getEnabledNotifications().equalsIgnoreCase("CALL")) {
+            Glide.with(mContext).load(R.drawable.call_icon)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .transform(new CircleTransform(mContext))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imgProfile);
+            holder.imgProfile.setColorFilter(null);
+            holder.iconText.setVisibility(View.GONE);
+        } else if (message.getEnabledNotifications().equalsIgnoreCase("EMAIL")) {
+            Glide.with(mContext).load(R.drawable.email_icon)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .transform(new CircleTransform(mContext))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imgProfile);
+            holder.imgProfile.setColorFilter(null);
+            holder.iconText.setVisibility(View.GONE);
+        } else if (message.getEnabledNotifications().equalsIgnoreCase("SMS")) {
+            Glide.with(mContext).load(R.drawable.sms_icon)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .transform(new CircleTransform(mContext))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.imgProfile);
+            holder.imgProfile.setColorFilter(null);
+            holder.iconText.setVisibility(View.GONE);
+        }
+        else {
+            holder.imgProfile.setImageResource(R.drawable.bg_circle);
+            holder.imgProfile.setColorFilter(message.getColor());
+            holder.iconText.setVisibility(View.VISIBLE);
+        }
     }
 
     private void applyIconAnimation(NConfigAdapter.MyViewHolder1 holder, int position) {

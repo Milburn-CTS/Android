@@ -50,6 +50,7 @@ public class NotificationConfig implements Serializable {
             strDOW += "FR, ";
         if ((DOW & 64) == 64)
             strDOW += "SA";
+        strDOW = strDOW.replaceAll(", $", "");
         return strDOW;
     }
 
