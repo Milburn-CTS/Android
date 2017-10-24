@@ -3,9 +3,9 @@ package com.continentaltechsolutions.dell.libmultispinner;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by DELL on 16-Oct-17.
  */
 
-public class MultiSelectionSpinner  extends Spinner implements
+public class MultiSelectionSpinner  extends AppCompatSpinner implements
         DialogInterface.OnMultiChoiceClickListener {
 
 

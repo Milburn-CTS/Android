@@ -47,6 +47,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <CheckedTextView
+            android:id="@+id/checkedTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkMark="@drawable/ic_add_black_24dp"
+            android:checked="false"
+            android:text="Click here to select All Day" />
+
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"

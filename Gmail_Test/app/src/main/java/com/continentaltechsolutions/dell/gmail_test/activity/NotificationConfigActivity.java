@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//CheckedTextView Help taken from http://www.wingnity.com/blog/use-checkedtextview-android/, http://abhiandroid.com/ui/checkedtextview
+
 public class NotificationConfigActivity extends AppCompatActivity implements MultiSelectionSpinner.OnMultipleItemsSelectedListener, android.view.View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private List<NotificationConfig> notificationConfigList = new ArrayList<>();
@@ -50,6 +53,7 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
     private String selectedDOW = null, incomingstrDOW = null;
     private View mProgressView;
     private View mNotificationConfigFormView;
+    private CheckedTextView checkedTextView;
 
     private static final String TAG = "NotificationConfig";
 
@@ -65,6 +69,10 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         tvFromTime = (TextView) findViewById(R.id.tvFromTime);
         tvToTime = (TextView) findViewById(R.id.tvToTime);
         btnAdd = (Button) findViewById(R.id.buttonAdd);
+        checkedTextView = (CheckedTextView)findViewById(R.id.checkedTextView);
+        checkedTextView.setCheckMarkDrawable(null);
+        checkedTextView.setChecked(false);
+
         String[] arrayDaysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         MultiSelectionSpinner mssarrayServiceCategory = (MultiSelectionSpinner) findViewById(R.id.spinnerDaysOfWeek);
         mssarrayServiceCategory.setItems(arrayDaysOfWeek);
@@ -199,6 +207,30 @@ public class NotificationConfigActivity extends AppCompatActivity implements Mul
         });
 
         populateNotificationTypes();
+
+        checkedTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkedTextView.isChecked()) {
+                    checkedTextView.setCheckMarkDrawable(null);
+                    checkedTextView.setChecked(false);
+                    checkedTextView.setText("Click here to select All Day");
+                    tvFromTime.setText("");
+                    tvFromTime.setEnabled(true);
+                    tvToTime.setText("");
+                    tvToTime.setEnabled(true);
+                }
+                else {
+                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_add_black_24dp);
+                    checkedTextView.setChecked(true);
+                    checkedTextView.setText("All Day Selected");
+                    tvFromTime.setText("12:00:00");
+                    tvFromTime.setEnabled(false);
+                    tvToTime.setText("23:59:59");
+                    tvToTime.setEnabled(false);
+                }
+            }
+        });
 
     }
 
